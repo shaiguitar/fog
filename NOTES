@@ -1,0 +1,126 @@
+ASK
+====
+
+groups
+rows
+environment => like a cluster?
+layout (per environment) => Rows and groups
+locations => physical locations
+organizations => like the whole account (ey)
+             
+
+ICENTER
+========
+
+ROW / GROUP => LOGICAL GROUPING WITHING ICENTER.
+
+MODELS TO ICENTER:
+==================
+
+VDC -> ENVIRONMENT (MAIN DROPDOWN EYMIA/TM22 ETC)
+TASK -> "VIEW TASK" IN THE SINGLE DEVICE SELECTION BELOW (get tasks, historical tasks of a single device)
+SERVER -> DEVICE  
+PUBLIC_IP -> PUBLIC IPS UNDER NETWORK TAB LISTED UNDER PUBLIC IPS
+IP -> INTERNAL IPS AVAILABLE IN THAT DMZ
+INTERNET_SERVICE -> BELONGS TO (MANY) PUBLIC IP (EXAMPLE HTTPS, AND HTTP ARE TWO INTERNET_SERVICES)
+NODE -> BELONGS TO (MANY) AN INTERNET_SERVICE (EXAMPLE, ROUTING TO SERVERS WITHIN THAT INTERNET_SERVICE)
+NETWORK -> DMZ (subnet), BELONGS TO A RESOURCE POOL
+FIREWALL_ACL -> NETWORK/SECURITY_SERVICES, NOT USED OFTEN.
+CATALOG_ITEM -> TEMPLATE WHICH IS LIKE A AMI, IT BELONGS TO ORGANIZATION. CREATE SERVER/FILL IN STUFF/TEMPLATE DROPDOWN.
+CATALOG -> COLLECTION OF CATALOG_ITEMS.
+BACKUP_INTERNET_SERVICE -> http://support.theenterprisecloud.com/kb/default.asp?id=953&Lang=1&SID= (not exposed in icenter)
+    
+REQUESTS fog/tm
+================
+                                                                                                   
+CREATING A NEW SERVICE/DEVICE
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/instantiate_vapp_template.rb
+                                                                                 
+GET EYMIA (ENVIRONMENT NOT RESOURCE POOL)
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/get_vdc.rb
+                                                                                           
+GET AMI                                        
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/get_vapp_template.rb
+
+GET SERVER/DEVICE
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/get_vapp.rb
+                                                                                        
+GET THE FIRST NEXT AVAILABLE INTERNAL IP FOR A GIVEN DMZ
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/get_network_ip.rb
+                                                                                                
+RNAT MANIPULATION                                                                     
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/get_network_extensions.rb
+http://support.theenterprisecloud.com/kb/print.asp?id=930&Lang=1&SID=
+                                                                                     
+RETURN INFORMATION ABOUT A GIVEN DMZ?
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/get_network.rb
+                                                                                                   
+CUSTOMIZE ENABLING MOVING A SERVER BETWEEN DMZ'S ? MAYBE.
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/get_customization_options.rb
+http://support.theenterprisecloud.com/kb/default.asp?id=615&Lang=1&SID=
+
+RNAT FOR SPECIFIC INTERNAL IPS
+https://github.com/fog/fog/blob/master/lib/fog/ecloud/requests/compute/configure_network.rb
+
+
+
+tm api url: https://services.enterprisecloud.terremark.com
+api key: 87efbff8be014b8f9887f8be78da79de
+
+REQUIRED HEADERS
+================             
+
+All other API requests must contain a header. Header fields required in every such request are:￼              
+Authorization
+The authorization token as described in 5.5 Authentication.￼
+Date
+The date and time of message transmission as described in 5.6 Date.￼
+x-tmrk-authorization￼
+The authorization token as described in 5.5 Authentication.
+x-tmrk-date
+The date and time of message transmission as described in 5.6 Date.
+x-tmrk-version
+The API version to be used to evaluate the call as described in 5.7 Version.
+
+CONDITIONAL HEADERS
+====================
+￼￼
+Accept
+An indicator in the call header as described in 5.8 Accept.
+￼
+Content-Length
+￼
+Length of the body in bytes as described in 5.9 Content Length.
+Content-Range
+Used in file upload calls as described in 5.10 Content Range.
+￼
+Content-Type
+￼
+The application type of the call as described 5.11 Content Type.
+Location
+Presented in most 201 Created responses headers as described in 5.12 Location.
+￼
+X-Guest-Password
+￼
+Used to interact with VM operating system as described in 5.13 Password.
+X-Guest-User
+Used to interact with VM operating system as described in 5.14 User.
+￼
+x-tmrk-contenthash
+￼
+Advanced hash scheme digest of body as described in 5.15 Content Digest.
+x-tmrk-token
+￼
+A session token for some calls as described in 5.16 Token.
+￼
+ @vcloud = ::Fog::Compute.new(:provider => 'ecloud',
+                                    :ecloud_username => 'srosenfeld@engineyard.com',
+                                    :ecloud_password => 'XXX',
+                                    :ecloud_version => '0.8b-ext2.10',
+                                    :ecloud_versions_uri => 'https://services.enterprisecloud.terremark.com/api/versions')
+   @vcloud.vdcs.each do |v|
+            puts "Processing #{v.name}..."
+            v.servers.each do |s|
+              puts s.name
+            end
+    end
