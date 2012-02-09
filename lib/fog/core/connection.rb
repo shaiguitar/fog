@@ -3,9 +3,11 @@ require 'active_support'
 module Fog
   class Connection
 
-    def initialize(url, persistent=false, params={})
-      @excon = Excon.new(url, params)
+    def initialize(url, persistent=false, connection_params={}, instrumentor_params={})
+      @excon = Excon.new(url, connection_params)
       @persistent = persistent
+      @instrumentor = instrumentor_params[:instrumentor]
+      @instrumentor_name = instrumentor_params[:instrumentor_name] || 'fog.connection'
     end
 
     def request(params, &block)
@@ -20,7 +22,11 @@ module Fog
       end
 
       response = nil
-      ActiveSupport::Notifications.instrument('fog.connection', params) do
+      if @instrumentor
+        @instrumentor.instrument(@instrumentor_name, params) do
+          response = @excon.request(params, &block)
+        end
+      else
         response = @excon.request(params, &block)
       end
 

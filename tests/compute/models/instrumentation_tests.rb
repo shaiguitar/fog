@@ -1,10 +1,6 @@
 require 'active_support'
-require 'pp'
-require 'ruby-debug'
 
 for provider, config in compute_providers
-  # provider = :aws
-  # config = compute_providers[:aws]
   def subscribe(match)
     @events = []
     ActiveSupport::Notifications.subscribe(match) do |*args|
