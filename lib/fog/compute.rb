@@ -90,13 +90,12 @@ module Fog
 
       if !!instrumentor
         compute.instance_eval <<-"END"
-          # alias_method :exec_request, :request
-          old_request = self.method(:request)
+          self.instance_variable_set('@old_request_method', self.method(:request))
 
-          def request(params)
-            ActiveSupport::Notifications.instrument('fog.request', params) do
-              exec_request(params)
-              old_request.call
+          def request(*args)
+            ActiveSupport::Notifications.instrument('fog.request', {:args => args}) do
+              puts "MEEP"
+              @old_request_method.call(*args)
             end
           end
         END
