@@ -88,19 +88,6 @@ module Fog
         raise ArgumentError.new("#{provider} is not a recognized compute provider")
       end
 
-      if !!instrumentor
-        compute.instance_eval <<-"END"
-          self.instance_variable_set('@old_request_method', self.method(:request))
-
-          def request(*args)
-            ActiveSupport::Notifications.instrument('fog.request', {:args => args}) do
-              puts "MEEP"
-              @old_request_method.call(*args)
-            end
-          end
-        END
-      end
-
       return compute
     end
 

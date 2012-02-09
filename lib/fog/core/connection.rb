@@ -1,3 +1,5 @@
+require 'active_support'
+
 module Fog
   class Connection
 
@@ -17,7 +19,10 @@ module Fog
         end
       end
 
-      response = @excon.request(params, &block)
+      response = nil
+      ActiveSupport::Notifications.instrument('fog.connection', params) do
+        response = @excon.request(params, &block)
+      end
 
       if parser
         body.finish
