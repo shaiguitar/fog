@@ -7,7 +7,10 @@ module Fog
 
     def self.new(attributes)
       attributes = attributes.dup # prevent delete from having side effects
-      case provider = attributes.delete(:provider).to_s.downcase.to_sym
+
+      instrumentor = attributes.delete(:instrumentor)
+
+      compute = case provider = attributes.delete(:provider).to_s.downcase.to_sym
       when :aws
         require 'fog/aws/compute'
         Fog::Compute::AWS.new(attributes)
@@ -84,6 +87,22 @@ module Fog
       else
         raise ArgumentError.new("#{provider} is not a recognized compute provider")
       end
+
+      if !!instrumentor
+        compute.instance_eval <<-"END"
+          # alias_method :exec_request, :request
+          old_request = self.method(:request)
+
+          def request(params)
+            ActiveSupport::Notifications.instrument('fog.request', params) do
+              exec_request(params)
+              old_request.call
+            end
+          end
+        END
+      end
+
+      return compute
     end
 
     def self.providers
@@ -100,6 +119,5 @@ module Fog
       end
       servers
     end
-
   end
 end
