@@ -8,8 +8,6 @@ module Fog
     def self.new(attributes)
       attributes = attributes.dup # prevent delete from having side effects
 
-      instrumentor = attributes.delete(:instrumentor)
-
       compute = case provider = attributes.delete(:provider).to_s.downcase.to_sym
       when :aws
         require 'fog/aws/compute'

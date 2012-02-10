@@ -89,7 +89,8 @@ module Fog
           @persistent = options[:persistent]  || true
           @port       = options[:port]        || 80 #443 Not yet
           @scheme     = options[:scheme]      || 'http' #'https Not yet
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", @persistent, @connection_options)
+          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", 
+              @persistent, @connection_options, options[:instrumentor_params])
         end
 
         def reload

@@ -36,7 +36,7 @@ module Fog
       request :linode_disk_list
       request :linode_disk_delete
       request :linode_disk_createfromdistribution
-      request :linode_disk_createfromstackscript     
+      request :linode_disk_createfromstackscript
       request :linode_ip_list
       request :linode_ip_addprivate
       request :linode_config_list
@@ -49,7 +49,7 @@ module Fog
       request :linode_shutdown
       request :linode_update
       request :stackscript_list
-      # request :linode_resize      
+      # request :linode_resize
 
       class Mock
 
@@ -85,7 +85,11 @@ module Fog
           @host   = options[:host]    || "api.linode.com"
           @port   = options[:port]    || 443
           @scheme = options[:scheme]  || 'https'
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", options[:persistent])
+          @persistent = options[:persistent] || false
+          @connection_options = options[:connection_options] || {}
+          @instrumentation_options = options[:instrumentation_options]
+          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}",
+              @persistent, @connection_options, @instrumentation_options)
         end
 
         def reload

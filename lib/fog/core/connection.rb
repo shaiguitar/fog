@@ -1,5 +1,3 @@
-require 'active_support'
-
 module Fog
   class Connection
 
@@ -41,6 +39,5 @@ module Fog
     def reset
       @excon.reset
     end
-
   end
 end

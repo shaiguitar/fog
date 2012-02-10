@@ -1265,7 +1265,8 @@ module Fog
 
           # Hash connections on the host_url ... There's nothing to say we won't get URI's that go to
           # different hosts.
-          @connections[host_url] ||= Fog::Connection.new(host_url, @persistent, @connection_options)
+          @connections[host_url] ||= Fog::Connection.new(host_url,
+              @persistent, @connection_options, options[:instrumentor_params])
 
           # Set headers to an empty hash if none are set.
           headers = params[:headers] || {}

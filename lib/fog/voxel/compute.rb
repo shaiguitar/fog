@@ -87,7 +87,8 @@ module Fog
 
           Excon.ssl_verify_peer = false
 
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", @persistent, @connection_options)
+          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}",
+              @persistent, @connection_options, options[:instrumentor_params])
         end
 
         def request(method_name, options = {})

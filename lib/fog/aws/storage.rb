@@ -265,8 +265,10 @@ module Fog
             @persistent = options[:persistent]  || true
             @port       = options[:port]        || 443
             @scheme     = options[:scheme]      || 'https'
+            @instrumentor_params = options[:instrumentor_params] || {}
           end
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}#{@path}", @persistent, @connection_options)
+          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}#{@path}",
+              @persistent, @connection_options, @instrumentor_params)
         end
 
         def reload
@@ -348,6 +350,7 @@ DATA
 
         private
 
+        # XXX mkb XXX
         def request(params, &block)
           params[:headers]['Date'] = Fog::Time.now.to_date_header
           params[:headers]['Authorization'] = "AWS #{@aws_access_key_id}:#{signature(params)}"
@@ -360,7 +363,8 @@ DATA
           rescue Excon::Errors::TemporaryRedirect => error
             uri = URI.parse(error.response.headers['Location'])
             Fog::Logger.warning("fog: followed redirect to #{uri.host}, connecting to the matching region will be more performant")
-            response = Fog::Connection.new("#{@scheme}://#{uri.host}:#{@port}", false, @connection_options).request(original_params, &block)
+            response = Fog::Connection.new("#{@scheme}://#{uri.host}:#{@port}", false, 
+                @connection_options, @instrumentor_params).request(original_params, &block)
           end
 
           response

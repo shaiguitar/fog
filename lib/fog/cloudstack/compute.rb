@@ -134,6 +134,7 @@ module Fog
 
       class Real
 
+        # XXX mkb XXX
         def initialize(options={})
           require 'multi_json'          
           @cloudstack_api_key         = options[:cloudstack_api_key]
@@ -144,7 +145,8 @@ module Fog
           @path                       = options[:cloudstack_path]    || '/client/api'
           @port                       = options[:cloudstack_port]    || 443
           @scheme                     = options[:cloudstack_scheme]  || 'https'
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}#{@path}", options[:cloudstack_persistent])
+          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}#{@path}", 
+            options[:cloudstack_persistent])
         end
 
         def reload

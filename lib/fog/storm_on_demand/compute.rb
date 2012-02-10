@@ -95,7 +95,8 @@ module Fog
           @scheme     = uri.scheme
           @storm_on_demand_username = options[:storm_on_demand_username]
           @storm_on_demand_password = options[:storm_on_demand_password]
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", @persistent, @connection_options)
+          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}",
+              @persistent, @connection_options, options[:instrumentor_params])
         end
 
         def reload

@@ -47,7 +47,9 @@ module Fog
         def initialize(options={})
           require 'multi_json'
           @connection_options = options[:connection_options] || {}
-          credentials = Fog::Rackspace.authenticate(options, @connection_options)
+          @instrumentor_params = options[:instrumentor_params] || {}
+          credentials = Fog::Rackspace.authenticate(options,
+              @connection_options, @instrumentor_params)
           @auth_token = credentials['X-Auth-Token']
           @enabled = false
           @persistent = options[:persistent] || false
@@ -58,7 +60,8 @@ module Fog
             @path   = uri.path
             @port   = uri.port
             @scheme = uri.scheme
-            @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", @persistent, @connection_options)
+            @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", 
+                @persistent, @connection_options, @instrumentor_params)
             @enabled = true
           end
         end

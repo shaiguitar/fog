@@ -27,9 +27,9 @@ Shindo.tests('Fog connection', 'core') do
       Fog::Connection.new("http://fake.url", false, {}).is_a?(Fog::Connection)
     end
 
-    tests('Also accepts an instrumentor in the contructor').returns('chutney') do
+    tests('Also accepts an instrumentor in the contructor').returns('gug') do
       connection = Fog::Connection.new("http://fake.url", false, {},
-          {:instrumentor_name => "chutney", :instrumentor => SimpleInstrumentor})
+          {:instrumentor_name => "gug", :instrumentor => SimpleInstrumentor})
       begin
         connection.request({})
       rescue Excon::Errors::SocketError

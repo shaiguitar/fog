@@ -80,12 +80,14 @@ module Fog
         def initialize(options={})
           require 'mime/types'
           require 'multi_json'
-          @rackspace_api_key = options[:rackspace_api_key]
-          @rackspace_username = options[:rackspace_username]
-          @rackspace_cdn_ssl = options[:rackspace_cdn_ssl]
-          @rackspace_auth_url = options[:rackspace_auth_url]
-          @connection_options     = options[:connection_options] || {}
-          credentials = Fog::Rackspace.authenticate(options, @connection_options)
+          @rackspace_api_key   = options[:rackspace_api_key]
+          @rackspace_username  = options[:rackspace_username]
+          @rackspace_cdn_ssl   = options[:rackspace_cdn_ssl]
+          @rackspace_auth_url  = options[:rackspace_auth_url]
+          @connection_options  = options[:connection_options] || {}
+          @instrumentor_params = options[:instrumentor_params] || {}
+          credentials = Fog::Rackspace.authenticate(options, 
+              @connection_options, @instrumentor_params)
           @auth_token = credentials['X-Auth-Token']
 
           uri = URI.parse(credentials['X-Storage-Url'])
@@ -95,7 +97,8 @@ module Fog
           @port       = uri.port
           @scheme     = uri.scheme
           Excon.ssl_verify_peer = false if options[:rackspace_servicenet] == true
-          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}", @persistent, @connection_options)
+          @connection = Fog::Connection.new("#{@scheme}://#{@host}:#{@port}",
+              @persistent, @connection_options, @instrumentor_params)
         end
 
         def reload
