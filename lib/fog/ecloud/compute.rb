@@ -1188,7 +1188,7 @@ module Fog
         end
 
         def supporting_versions
-          ["v0.8b-ext2.6", "0.8b-ext2.6", "v0.8b-ext2.8" , "0.8b-ext2.8"]
+          ["v0.8b-ext2.6", "0.8b-ext2.6", "v0.8b-ext2.8" , "0.8b-ext2.8", "2011-10-01"]
         end
 
         private
